@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import ConvertApi from 'convertapi-js';
 
+// state management
 const FileCompression = () => {
   const [file, setFile] = useState(null);
   const [inputFormat, setInputFormat] = useState('docx');
   const [outputFormat, setOutputFormat] = useState('pdf');
   const [result, setResult] = useState('');
 
+  // handles file input change event
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
+  // file compression process
   const compressFile = async () => {
     try {
       if (!file) {
@@ -36,7 +39,7 @@ const FileCompression = () => {
       setResult(`Error: ${error.message}`);
     }
   };
-
+  //  file conversion process.
   const convertFile = async () => {
     try {
       if (!file) {
@@ -84,7 +87,6 @@ const FileCompression = () => {
     <div>
       <h1>File Compression</h1>
       <p>Select a file to compress:</p>
-
       <input type="file" onChange={handleFileChange} accept=".txt, .pdf, .jpg, .png, .zip" required />
       <button type="button" onClick={compressFile}>
         Compress File

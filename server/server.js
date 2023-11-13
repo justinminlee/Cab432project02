@@ -1,22 +1,27 @@
-const express = require('express');
-const compression = require('compression');
-const { createGzip } = require('compression-streams');
-const path = require('path');
-const fs = require('fs');
-const multer = require('multer');
-const ConvertApi = require('convertapi-js');
+// imported required modules
+const express = require('express'); // web framework for NodeJS
+const compression = require('compression'); // Middleware for compressing HTTP responses.
+const { createGzip } = require('compression-streams'); // Compression using streams.
+const path = require('path'); // Utility for working with file paths.
+const fs = require('fs'); // File system module for working with file I/O.
+const multer = require('multer'); // Middleware for handling multipart/form-data, which is primarily used for file uploads.
+const ConvertApi = require('convertapi-js'); // A library for working with the ConvertAPI service for file conversion.
 
+// Configure Multer for File Upload:
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }); // multer.memoryStorage(): Configuration for storing uploaded files in memory.
 
+// Set Up ConvertAPI Key:
 const convertApiKey = 'LjMHwWnECuHQK6ZV'; 
 const convertApi = ConvertApi.auth(convertApiKey);
 
+// Create Express App and Set Port:
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(compression());
-app.use(express.static('client/build'));
+
+app.use(compression()); // compression(): Compresses responses using the gzip compression.
+app.use(express.static('client/build')); // express.static('client/build'): Serves static files from the 'client/build' directory.
 
 app.post('/compress', async (req, res) => {
   try {
