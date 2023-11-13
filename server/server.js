@@ -12,7 +12,6 @@ const AWS = require('aws-sdk');
 const busboy = require('busboy');
 const sharp = require('sharp');
 const archiver = require('archiver');
-const fs = require('fs');
 const cors = require('cors');
 const formidable = require('express-formidable');
 require("dotenv").config();
