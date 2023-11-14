@@ -28,9 +28,16 @@ function App() {
     });
 
     try {
-      const response = await axios.post(`http://localhost:3000/compress?format=${compressionFormat}`, formData, {
+      const response = await axios({
+        method: 'post',
+        url: 'http://localhost:3000/compress',
+        data: {
+          files: selectedFiles,
+          format: compressionFormat,
+        },
         responseType: 'blob',
       });
+      
 
       const downloadUrl = (window.URL || window.webkitURL).createObjectURL(new Blob([response.data]));
 
