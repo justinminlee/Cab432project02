@@ -22,6 +22,7 @@
     "express-formidable": "^1.2.0",
     "fs": "^0.0.1-security",
     "redis": "^4.6.10",
+    "response-time": "^2.3.2",
     "sharp": "^0.32.6"
   },
   "devDependencies": {
