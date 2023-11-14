@@ -8,19 +8,23 @@ const { exec } = require('child_process');
 const path = require('path');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
 app.use(bodyParser.json());
 app.use(compression());
 
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, 'client/app')));
 
 // API route for file compression
-app.post('/compress', (req, res) => {
-  const { files } = req.body;
-  const { format } = req.query;
+app.post('/compress', async (req, res) => {
+  const { files, format } = req.body;
+
+  if (!format || !['zip', 'tar.gz'].includes(format)) {
+    return res.status(400).send('Invalid compression format');
+  }
+
   const archive = archiver(format, { gzip: format === 'tar.gz', zlib: { level: 9 } });
   const output = fs.createWriteStream(`compressed.${format}`);
 
@@ -33,10 +37,10 @@ app.post('/compress', (req, res) => {
   archive.finalize();
 
   output.on('close', () => {
-    exec(`bzip2 -9 compressed.${format}`, (error, stdout, stderr) => {
+    const compressionCommand = format === 'tar.gz' ? 'gzip' : 'bzip2';
+    exec(`${compressionCommand} -9 compressed.${format}`, (error, stdout, stderr) => {
       if (error) {
         console.error(`Compression error: ${stderr}`);
-        res.status(500).send('Compression failed');
         res.status(500).send(`Compression failed: ${error.message}`);
       } else {
         const filePath = path.join(__dirname, `compressed.${format}.bz2`);
@@ -54,10 +58,6 @@ app.post('/compress', (req, res) => {
   });
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build/index.html'));
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
